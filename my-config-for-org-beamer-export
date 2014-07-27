@@ -17,7 +17,6 @@
 	       
 
 ; orgファイルにヘッダーを挿入するためのelisp
-; 『Beamer は dvipdfmx をサポートするか否か？ (2)』を参考にさせてもらった。
 (defun org-beamer-insert-options-template (&optional kind)
   "Insert a settings template, to make sure users do this right."
   (interactive (progn
@@ -39,13 +38,6 @@
     (insert "#+OPTIONS: H:1 toc:nil \\n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:t\n")
     (insert "#+LaTeX_CLASS: beamer\n")
     (insert "#+LaTeX_CLASS_OPTIONS: [uplatex,dvipdfmx,presentation]\n")
-    (insert "#+LaTeX_HEADER: \\usepackage{graphicx}\n")
-    (insert "#+LaTeX_HEADER: \\usepackage{bxdpx-beamer}  % ナビゲーションシンボルを機能させる\n")
-    (insert "#+LaTeX_HEADER: \\usepackage{pxjahyper}     % しおりの文字化け対策\n")
-    (insert "#+LaTeX_HEADER: \\usepackage{otf}        % 和文メトリックの調整（代わりに otf を読み込んでも良い）\n")
-    (insert "#+LaTeX_HEADER: \\renewcommand{\\kanjifamilydefault}{\\gtdefault} % 和文既定をゴシックに変更\n")
-    (insert "#+BEAMER_FONT_THEME: default\n")
-    (insert "#+BEAMER_THEME: Singapore\n")
     					;(when org-beamer-theme (insert "#+BEAMER_THEME: " org-beamer-theme "\n"))
     (when org-beamer-column-view-format
       (insert "#+COLUMNS: " org-beamer-column-view-format "\n"))
