@@ -1,0 +1,83 @@
+; org-latex-pdf-process
+
+(setq org-latex-pdf-process '("latexmk %f"))
+
+; org-latex-beamer-exportの設定
+(require 'ox-beamer)
+(require 'ox-latex)
+(add-to-list 'org-latex-classes
+             '("beamer"
+               "\\documentclass[uplatex,dvipdfmx,presentation]{beamer}
+                [NO-DEFAULT-PACKAGES]
+                [NO-PACKAGES]
+                [EXTRA]"
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\subsection{%s}" . "\\subsection*{%s}")
+	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))) 
+	       
+
+; orgファイルにヘッダーを挿入するためのelisp
+; 『Beamer は dvipdfmx をサポートするか否か？ (2)』を参考にさせてもらった。
+(defun org-beamer-insert-options-template (&optional kind)
+  "Insert a settings template, to make sure users do this right."
+  (interactive (progn
+		 (message "Current [s]ubtree or [g]lobal?")
+		 (if (eq (read-char-exclusive) ?g) (list 'global)
+		   (list 'subtree))))
+  (if (eq kind 'subtree)
+      (progn
+	(org-back-to-heading t)
+	(org-reveal)
+	(org-entry-put nil "EXPORT_LaTeX_CLASS" "beamer")
+	(org-entry-put nil "EXPORT_LaTeX_CLASS_OPTIONS" "[uplatex,dvipdfmx,presentation]")
+	(org-entry-put nil "EXPORT_FILE_NAME" "presentation.pdf")
+	(when org-beamer-column-view-format
+	  (org-entry-put nil "COLUMNS" org-beamer-column-view-format))
+	(org-entry-put nil "BEAMER_col_ALL" org-beamer-column-widths))
+    (insert "#+TITLE:\n")
+    (insert "#+AUTHOR:\n")
+    (insert "#+OPTIONS: H:1 toc:nil \\n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:t\n")
+    (insert "#+LaTeX_CLASS: beamer\n")
+    (insert "#+LaTeX_CLASS_OPTIONS: [uplatex,dvipdfmx,presentation]\n")
+    (insert "#+LaTeX_HEADER: \\usepackage{graphicx}\n")
+    (insert "#+LaTeX_HEADER: \\usepackage{bxdpx-beamer}  % ナビゲーションシンボルを機能させる\n")
+    (insert "#+LaTeX_HEADER: \\usepackage{pxjahyper}     % しおりの文字化け対策\n")
+    (insert "#+LaTeX_HEADER: \\usepackage{otf}        % 和文メトリックの調整（代わりに otf を読み込んでも良い）\n")
+    (insert "#+LaTeX_HEADER: \\renewcommand{\\kanjifamilydefault}{\\gtdefault} % 和文既定をゴシックに変更\n")
+    (insert "#+BEAMER_FONT_THEME: default\n")
+    (insert "#+BEAMER_THEME: Singapore\n")
+    					;(when org-beamer-theme (insert "#+BEAMER_THEME: " org-beamer-theme "\n"))
+    (when org-beamer-column-view-format
+      (insert "#+COLUMNS: " org-beamer-column-view-format "\n"))
+    (insert "#+PROPERTY: BEAMER_col_ALL " org-beamer-column-widths "\n")
+    (insert "#+STARTUP: beamer\n\n")))
+
+
+; カレントバッファのファイル名を持つpdfを削除する
+(defun my-delete-pdf-file() 
+  (interactive)
+  (let((pdffile (concat (file-name-sans-extension (buffer-file-name)) ".pdf")))
+    (if (file-exists-p pdffile) 
+	(progn 
+	  (delete-file pdffile)
+	  (message "deleted!"))
+      (message "no pdf file"))))
+
+;  "org-export-as-pdfの挙動を変更、先にpdfファイルを削除する"
+  (defadvice org-export-as-pdf
+    (before org-export-as-pdf-before-advice)
+    (my-delete-pdf-file))
+  (ad-activate 'org-export-as-pdf)
+   ;; (ad-deactivate 'org-export-as-pdf)
+
+;  "org-export-as-pdf-and-openの挙動を変更、先にpdfファイルを削除する"
+  (defadvice org-export-as-pdf-and-open
+    (before org-export-as-pdf-and-open-before-advice)
+    (my-delete-pdf-file))
+  (ad-activate 'org-export-as-pdf-and-open)
+   ;; (ad-deactivate 'org-export-as-pdf)
+
+
+; pdfを開くのにevinceを使用する。
+(customize-set-variable 'org-file-apps
+                        '(("pdf" . "evince %s")))
