@@ -1,0 +1,10 @@
+$latex  = 'uplatex';
+$latex_silent = 'uplatex -interaction=batchmode';
+$bibtex = 'upjbibtex';
+$dvips  = 'dvips';
+$dvi_previewer ='start dviout'; # -pv option;
+$dvipdf  = 'dvipdfmx -f my-kanjix.map %O -o %D %S';
+$pdf_previewer = 'start evince %O %S';
+$pdf_mode = 3;
+$pdf_update_method = 0;
+$makeindex  = 'mendex -r -c -g -s dot.ist -p any';
