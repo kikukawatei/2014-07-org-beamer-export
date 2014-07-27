@@ -1,0 +1,32 @@
+%% my-beamer.sty
+%% beamer出力用のプリアンブル
+%% [Mon Jul 28 00:39:22 2014]
+
+%% 読み込むパッケージ
+\usepackage{bxdpx-beamer}  % ナビゲーションシンボルを機能させる
+\usepackage{pxjahyper}     % しおりの文字化け対策
+\usepackage{otf}        % 和文メトリックの調整（代わりに otf を読み込んでも良い）
+\usepackage{txfonts}
+
+
+%% beamerのテーマ
+\usetheme{Singapore}
+
+
+%% フォントの設定
+\renewcommand{\kanjifamilydefault}{\gtdefault} % 和文既定をゴシックに変更
+\renewcommand{\familydefault}{\sfdefault}
+\mathversion{bold}
+\setbeamerfont{title}{size=\large,series=\bfseries}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamertemplate{frametitle}[default][center]
+\usefonttheme{professionalfonts} 
+
+
+%% %% itemize環境の行間を調整
+%% \renewenvironment{itemize}%
+%%  {\begin{itemize}%
+%%    \setlength{\itemsep}{.8pt}%
+%% %   \setlength{\parsep}{0pt}}%
+%% %   \setlength{\parskip}{0pt}}%
+%%   \end{itemize}}
