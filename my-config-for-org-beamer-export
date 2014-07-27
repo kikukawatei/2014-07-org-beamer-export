@@ -38,6 +38,7 @@
     (insert "#+OPTIONS: H:1 toc:nil \\n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:t\n")
     (insert "#+LaTeX_CLASS: beamer\n")
     (insert "#+LaTeX_CLASS_OPTIONS: [uplatex,dvipdfmx,presentation]\n")
+    (insert "#+LaTeX_HEADER: \\usepackage{my-beamer}\n")
     					;(when org-beamer-theme (insert "#+BEAMER_THEME: " org-beamer-theme "\n"))
     (when org-beamer-column-view-format
       (insert "#+COLUMNS: " org-beamer-column-view-format "\n"))
